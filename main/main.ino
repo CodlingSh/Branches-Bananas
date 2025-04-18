@@ -1,17 +1,19 @@
 #include "player.h"
+#include "branch.h"
 #include <Arduboy2.h>
 
 Arduboy2 ab;
 Player player;
+Branch branches[6];
 
-const uint8_t PROGMEM vine[] = {
-8, 4,
-0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x0f, 0x07, 
+const uint8_t PROGMEM tree[] = {
+8, 3,
+0x06, 0x07, 0x05, 0x05, 0x05, 0x07, 0x07, 0x06, 
 };
 
-const uint8_t PROGMEM vineR[] = {
-8, 4,
-0x0e, 0x0e, 0x0f, 0x0e, 0x0e, 0x0e, 0x0e, 0x0e, 
+const uint8_t PROGMEM treeR[] = {
+8, 3,
+0x03, 0x07, 0x05, 0x05, 0x07, 0x07, 0x03, 0x03, 
 };
 
 
@@ -47,15 +49,22 @@ void loop() {
       
       draw_vines(animFrame);
       ab.setCursor(100, 30);
-      ab.println(player.getY());
+      ab.println(branches[0].getX());
       if (ab.justPressed(LEFT_BUTTON)) {
         player.jump();
       };
+      if (ab.justPressed(A_BUTTON)) {
+        branches[0].spawn();
+      }
+      for (int i = 0; i < 6; i++) {
+        if (branches[i].getActive()) {
+          branches[i].update();
+        }
+      }
       player.update();
       break;
   }
 
-  Serial.write(ab.getBuffer(), 128 * 64 / 8);
   ab.display();
 }
 
@@ -70,15 +79,15 @@ void titlescreen() {
 
 void draw_vines(int &animFrame) {
   
-  if (animFrame < 8) {
+  if (animFrame < 7) {
     animFrame++;
   } else {
     animFrame = 0;
   }
 
   for (int i = 0; i <= 128; i += 8) {
-    Sprites::drawOverwrite(i - animFrame, 0, vine, 0);
-    Sprites::drawOverwrite(i - animFrame, 60, vineR, 0);
+    Sprites::drawOverwrite(i - animFrame, 0, tree, 0);
+    Sprites::drawOverwrite(i - animFrame, 61, treeR, 0);
   }
 }
 
