@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <Arduboy2.h>
+Arduboy2 ab;
 
 const unsigned char PROGMEM monkeyR[] = {
   16, 16,
@@ -34,6 +35,7 @@ class Player {
     int _y = 0;
     bool airborn = false;
     bool onRight = false;
+    bool dead = false;
     uint8_t *currSprite = monkey; 
   
   public:
@@ -46,6 +48,17 @@ class Player {
       return _y;
     };
 
+    void branchCollisionCheck() {
+      for (int i = 0; i < 6; i++) {
+        if (branches[i].getActive()) {
+          // Check if player is on the same Y axis
+          if (player._y >= branches[i].getY() && player._y <= branches[i].getY() + branches[i].getLength()) {
+            ab.setRGBled(255,0,0);
+          }
+        }
+      }
+    }
+
     void jump() {
       if (!airborn) {
         if (onRight) {
@@ -57,6 +70,8 @@ class Player {
         airborn = true;
       }
     };
+
+    bool hitBranch
 
     void update() {
       if (airborn) {

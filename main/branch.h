@@ -35,8 +35,10 @@ class Branch {
   private:
     int _x = 140;
     int _y = 3;
-    bool active = false;
-    uint8_t *currSprite;
+    int _length = 16;
+    int _height = 7;
+    bool _active = false;
+    uint8_t *_currSprite;
 
   public:
 
@@ -44,21 +46,30 @@ class Branch {
       return _x;
     };
 
+    int getLength() {
+      return _length;
+    };
+
+    int getHeight() {
+      return _height;
+    }
+
     bool getActive() {
-      return active;
+      return _active;
     }
 
     void spawn() {
       _x = 140;
       _y = 3;
-      active = true;
+      _active = true;
       int rnd = random(10);
 
       if (rnd == 2) {
-        currSprite = largeBranch;
+        _currSprite = largeBranch;
+        _height = 32;
       }
       else {
-        currSprite = smallBranch;
+        _currSprite = smallBranch;
       }
 
       Serial.println(String(rnd));
@@ -67,16 +78,17 @@ class Branch {
     };
 
     void update() {
-      if (active == true) {
+      if (_active == true) {
         _x--;
         
         if (_x < -5) {
           _x = 140;
-          active = false;
+          _active = false;
         }
       }
+    };
 
-      Sprites::drawOverwrite(_x, _y, currSprite, 0);
+      Sprites::drawOverwrite(_x, _y, _currSprite, 0);
     };
     
 };
