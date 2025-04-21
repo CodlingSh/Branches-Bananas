@@ -2,7 +2,7 @@
 #define PLAYER_H
 
 #include <Arduboy2.h>
-Arduboy2 ab;
+#include "branch.h"
 
 const unsigned char PROGMEM monkeyR[] = {
   16, 16,
@@ -33,30 +33,20 @@ class Player {
   private:
     int _x = 5;
     int _y = 0;
+    float gravityDelta = 0.125;
     bool airborn = false;
     bool onRight = false;
-    bool dead = false;
+    bool falling = false;
     uint8_t *currSprite = monkey; 
   
   public:
 
     int getX() {
       return _x;
-    };
+    }
     
     int getY() {
       return _y;
-    };
-
-    void branchCollisionCheck() {
-      for (int i = 0; i < 6; i++) {
-        if (branches[i].getActive()) {
-          // Check if player is on the same Y axis
-          if (player._y >= branches[i].getY() && player._y <= branches[i].getY() + branches[i].getLength()) {
-            ab.setRGBled(255,0,0);
-          }
-        }
-      }
     }
 
     void jump() {
@@ -69,9 +59,11 @@ class Player {
         }
         airborn = true;
       }
-    };
+    }
 
-    bool hitBranch
+    void fall() {
+      falling = true;
+    }
 
     void update() {
       if (airborn) {
@@ -86,7 +78,7 @@ class Player {
           airborn = false;
           onRight = !onRight;
         }
-      };
+      }
 
       // Reset sprite when not airborn
       if (!airborn) {
@@ -98,11 +90,26 @@ class Player {
         }  
       }
 
+      // Fall when hit
+      if (falling) {
+        _x -= gravityDelta;
+        Serial.println("FALLING");
+        if (onRight) {
+          _y -= 2;
+        }
+        else if (!onRight) {
+          _y += 2;
+        }
 
+        if (gravityDelta < 5) gravityDelta += gravityDelta;
+        if (_x < -50) falling = false;
+      }
+    }
+
+    void draw() {
       // Draw player
       Sprites::drawOverwrite(_x, _y, currSprite, 0);
-    };
-
+    }
 };
 
 #endif

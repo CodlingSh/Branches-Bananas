@@ -46,6 +46,10 @@ class Branch {
       return _x;
     };
 
+    int getY() {
+      return _y;
+    };
+
     int getLength() {
       return _length;
     };
@@ -88,9 +92,9 @@ class Branch {
       }
     };
 
+    void draw() {
       Sprites::drawOverwrite(_x, _y, _currSprite, 0);
     };
-    
 };
 
 #endif
