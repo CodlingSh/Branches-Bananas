@@ -2,10 +2,14 @@
 #include "branch.h"
 #include <Arduboy2.h>
 
+#define MAX_BRANCHES 6
+
 Arduboy2 ab;
 Player player;
-Branch branches[6];
+Branch branches[MAX_BRANCHES];
+bool animate = true;
 
+// TREE SPRITES
 const uint8_t PROGMEM tree[] = {
 8, 3,
 0x05, 0x05, 0x06, 0x06, 0x05, 0x05, 0x06, 0x06, 
@@ -30,7 +34,6 @@ void setup() {
 
 void loop() {
   static int animFrame = 0;
-  static bool animate = true;
 
   // Check for next frame
   if (!ab.nextFrame()) {
@@ -48,12 +51,12 @@ void loop() {
       break;
     case 1:
       // GAME PLAY
-      draw_vines(animFrame, animate);
+      draw_vines(animFrame);
       ab.setCursor(100, 30);
-      ab.println(branches[0].getX());
+      ab.println(player.getY());
       if (ab.justPressed(LEFT_BUTTON)) {
         player.jump();
-      };
+      }
       if (ab.justPressed(A_BUTTON)) {
         branches[0].spawn();
       }
@@ -65,8 +68,18 @@ void loop() {
       }
       player.update();
       player.draw();
-      branchCollisionCheck(animate);
+      branchCollisionCheck();
+      if (player.getX() < -50) {
+        state = 2;
+      }
+      Serial.println("Player Y: " + String(player.getY()) + " \n" + " Branch Y: " + branches[0].getY());
       break;
+    case 2:
+      // GAME OVER
+      ab.println("GAME OVER");
+      if (ab.justPressed(A_BUTTON)) {
+        resetGame();
+      }
   }
 
   ab.display();
@@ -81,7 +94,7 @@ void titlescreen() {
   } 
 }
 
-void draw_vines(int &animFrame, bool animate) {
+void draw_vines(int &animFrame) {
   
   if (animate) {
     if (animFrame < 7) {
@@ -98,27 +111,43 @@ void draw_vines(int &animFrame, bool animate) {
   }
 }
 
-void branchCollisionCheck(bool &animate) {
+void branchCollisionCheck() {
   bool hit = false;
 
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < MAX_BRANCHES; i++) {
     if (branches[i].getActive()) {
-      // Check if player is on the same Y axis
-      if (player.getX() + 16 >= branches[i].getX() 
-      && player.getX() + 16 <= branches[i].getX() + 7
-      || player.getY() ) {
+      // Collision check start
+      /*if (player.getX() + 16 >= branches[i].getX() && player.getX() + 16 <= branches[i].getX() + 7 // Check to see if player is between hitting the branch on the vertical
+      || player.get) {
         hit = true;
       }
       else {
         hit = false;
+      }*/
+      if (player.getY() >= branches[i].getY() && player.getY() <= branches[i].getY() + branches[i].getLength()
+      || player.getY() + 16 >= branches[i].getY() && player.getY() + 16 <= branches[i].getY() + branches[i].getLength()) {
+        ab.setRGBled(255,0,0);
+      }
+      else {
+        ab.setRGBled(0,0,0);
       }
     }
+
   }
 
   if (hit) {
     player.fall();
     animate = false;
   }
+}
+
+void resetGame() {
+  player.reset();
+  for (int i = 0; i < MAX_BRANCHES; i++) {
+    branches[i].reset();
+  }
+  animate = true;
+  state = 1;
 }
 
 
