@@ -116,23 +116,14 @@ void branchCollisionCheck() {
 
   for (int i = 0; i < MAX_BRANCHES; i++) {
     if (branches[i].getActive()) {
-      // Collision check start
-      /*if (player.getX() + 16 >= branches[i].getX() && player.getX() + 16 <= branches[i].getX() + 7 // Check to see if player is between hitting the branch on the vertical
-      || player.get) {
+      if (player.getX() < branches[i].getX() + branches[i].getHeight() + 3 &&
+          player.getX() + 16 > branches[i].getX() &&
+          player.getY() < branches[i].getY() + branches[i].getLength() &&
+          player.getY() + 16 > branches[i].getY()) 
+      {
         hit = true;
       }
-      else {
-        hit = false;
-      }*/
-      if (player.getY() >= branches[i].getY() && player.getY() <= branches[i].getY() + branches[i].getLength()
-      || player.getY() + 16 >= branches[i].getY() && player.getY() + 16 <= branches[i].getY() + branches[i].getLength()) {
-        ab.setRGBled(255,0,0);
-      }
-      else {
-        ab.setRGBled(0,0,0);
-      }
     }
-
   }
 
   if (hit) {
