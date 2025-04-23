@@ -3,6 +3,7 @@
 
 #include <Arduboy2.h>
 
+// SPRITES
 const uint8_t PROGMEM smallBranch[] = {
 7, 16,
 0x01, 0x01, 0xc3, 0xff, 0xff, 0xff, 0x00, 
@@ -41,7 +42,6 @@ class Branch {
     uint8_t *_currSprite;
 
   public:
-
     int getX() {
       return _x;
     };
@@ -68,18 +68,34 @@ class Branch {
       _active = true;
       int rnd = random(10);
 
+      // Decide size of branch
       if (rnd == 2) {
         _currSprite = largeBranch;
-        _height = 32;
+        _length = 32;
       }
       else {
         _currSprite = smallBranch;
+      }
+
+      // Decide what side of screen branch will spawn on
+      rnd = random(2);
+      if (rnd == 1) {
+        _y = 61 - 16;
+        Serial.println("I am on the other side " + String(_y));
       }
 
       Serial.println(String(rnd));
 
       
     };
+
+    void reset() {
+      _x = 140;
+      _y = 3;
+      _length = 16;
+      _height = 7;
+      _active = false;
+    }
 
     void update() {
       if (_active == true) {

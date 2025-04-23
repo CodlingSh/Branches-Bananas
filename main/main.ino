@@ -34,6 +34,7 @@ void setup() {
 
 void loop() {
   static int animFrame = 0;
+  static int spawnTimer = 0;
 
   // Check for next frame
   if (!ab.nextFrame()) {
@@ -52,6 +53,13 @@ void loop() {
     case 1:
       // GAME PLAY
       draw_vines(animFrame);
+      // Branch Spawn logic
+      spawnTimer++;
+      if (spawnTimer == 32) {
+        spawnBranch();
+        Serial.println("Spawn timer: " + String(spawnTimer));
+        spawnTimer = 0;
+      }
       ab.setCursor(100, 30);
       ab.println(player.getY());
       if (ab.justPressed(LEFT_BUTTON)) {
@@ -72,7 +80,6 @@ void loop() {
       if (player.getX() < -50) {
         state = 2;
       }
-      Serial.println("Player Y: " + String(player.getY()) + " \n" + " Branch Y: " + branches[0].getY());
       break;
     case 2:
       // GAME OVER
@@ -139,6 +146,16 @@ void resetGame() {
   }
   animate = true;
   state = 1;
+}
+
+int spawnBranch() {
+  for (int i = 0; i < MAX_BRANCHES; i++) {
+    if (!branches[i].getActive()) {
+      branches[i].spawn();
+      Serial.println("Spawned branch " + String(i));
+      return 0;   
+    }
+  }
 }
 
 
