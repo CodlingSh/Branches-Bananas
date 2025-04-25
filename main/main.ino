@@ -8,6 +8,7 @@ Arduboy2 ab;
 Player player;
 Branch branches[MAX_BRANCHES];
 bool animate = true;
+int state;
 
 // TREE SPRITES
 const uint8_t PROGMEM tree[] = {
@@ -19,9 +20,6 @@ const uint8_t PROGMEM treeR[] = {
 8, 3,
 0x03, 0x03, 0x05, 0x05, 0x03, 0x03, 0x05, 0x05, 
 };
-
-
-int state;
 
 void setup() {
   // put your setup code here, to run once:
@@ -57,7 +55,6 @@ void loop() {
       spawnTimer++;
       if (spawnTimer == 32) {
         spawnBranch();
-        Serial.println("Spawn timer: " + String(spawnTimer));
         spawnTimer = 0;
       }
       ab.setCursor(100, 30);
@@ -74,9 +71,12 @@ void loop() {
           branches[i].draw();
         }
       }
-      player.update();
+      if (animate) player.update();
       player.draw();
-      branchCollisionCheck();
+      if (branchCollisionCheck()) {
+        //player.fall();
+        animate = false;
+      }
       if (player.getX() < -50) {
         state = 2;
       }
@@ -102,7 +102,6 @@ void titlescreen() {
 }
 
 void draw_vines(int &animFrame) {
-  
   if (animate) {
     if (animFrame < 7) {
       animFrame++;
@@ -110,33 +109,33 @@ void draw_vines(int &animFrame) {
       animFrame = 0;
     }
   }
-    
-
+  
   for (int i = 0; i <= 128; i += 8) {
     Sprites::drawOverwrite(i - animFrame, 0, tree, 0);
     Sprites::drawOverwrite(i - animFrame, 61, treeR, 0);
   }
 }
 
-void branchCollisionCheck() {
-  bool hit = false;
-
+bool branchCollisionCheck() {
   for (int i = 0; i < MAX_BRANCHES; i++) {
     if (branches[i].getActive()) {
-      if (player.getX() < branches[i].getX() + branches[i].getHeight() + 3 &&
-          player.getX() + 16 > branches[i].getX() &&
+      if (player.getX() < branches[i].getX() + branches[i].getHeight() &&
+          player.getX() + 16 > branches[i].getX() + 3 &&
           player.getY() < branches[i].getY() + branches[i].getLength() &&
           player.getY() + 16 > branches[i].getY()) 
-      {
-        hit = true;
+      { 
+        Serial.println("Player X:" + String(player.getX()));
+        Serial.println("Player Y:" + String(player.getY()));
+        Serial.println("Branch X:" + String(branches[i].getX()));
+        Serial.println("Branch Y:" + String(branches[i].getY()));
+        Serial.println("----------------------");
+        ab.setRGBled(100,0,0);
+        return true;
       }
     }
   }
 
-  if (hit) {
-    player.fall();
-    animate = false;
-  }
+  return false;
 }
 
 void resetGame() {

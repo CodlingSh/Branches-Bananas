@@ -81,10 +81,7 @@ class Branch {
       rnd = random(2);
       if (rnd == 1) {
         _y = 61 - 16;
-        Serial.println("I am on the other side " + String(_y));
       }
-
-      Serial.println(String(rnd));
 
       
     };
