@@ -2,8 +2,8 @@
 #define PLAYER_H
 
 #include <Arduboy2.h>
-#include "branch.h"
 
+// SPRITES
 const unsigned char PROGMEM monkeyR[] = {
   16, 16,
   0xc0, 0x20, 0x10, 0x0e, 0x01, 0x0d, 0x15, 0x12, 0x08, 0x08, 0x24, 0x14, 0x14, 0x24, 0x08, 0xf0, 
@@ -65,6 +65,16 @@ class Player {
       falling = true;
     }
 
+    void reset() {
+      _x = 5;
+      _y = 0;
+      gravityDelta = 0.125;
+      airborn = false;
+      onRight = false;
+      falling = false;
+      currSprite = monkey; 
+    }
+
     void update() {
       if (airborn) {
         if (onRight) {
@@ -93,7 +103,6 @@ class Player {
       // Fall when hit
       if (falling) {
         _x -= gravityDelta;
-        Serial.println("FALLING");
         if (onRight) {
           _y -= 2;
         }
