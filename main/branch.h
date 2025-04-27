@@ -10,6 +10,13 @@ const uint8_t PROGMEM smallBranch[] = {
 0x00, 0x00, 0x00, 0x7f, 0xff, 0xff, 0x0c, 
 };
 
+const uint8_t PROGMEM medBranch[] = {
+7, 24,
+0x01, 0x01, 0x03, 0xff, 0xff, 0xff, 0x00, 
+0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x03, 
+0x00, 0x00, 0x18, 0xff, 0xff, 0xff, 0x00, 
+};
+
 const uint8_t PROGMEM largeBranch[] = {
 7, 32,
 0x01, 0x01, 0x03, 0xff, 0xff, 0xff, 0x00, 
@@ -24,6 +31,13 @@ const uint8_t PROGMEM smallBranchR[] = {
 0x80, 0x80, 0xc3, 0xff, 0xff, 0xff, 0x00, 
 };
 
+const uint8_t PROGMEM medBranchR[] = {
+7, 24,
+0x00, 0x00, 0x18, 0xff, 0xff, 0xff, 0x00, 
+0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xc0, 
+0x80, 0x80, 0xc0, 0xff, 0xff, 0xff, 0x00, 
+};
+
 const uint8_t PROGMEM largeBranchR[] = {
 7, 32,
 0x00, 0x00, 0x30, 0xff, 0xff, 0xff, 0x00, 
@@ -36,8 +50,10 @@ class Branch {
   private:
     int _x = 140;
     int _y = 3;
-    int _length = 16;
+    int _length;
     int _height = 7;
+    int _rnd;
+    int _leftOrRight;
     bool _active = false;
     uint8_t *_currSprite;
 
@@ -65,22 +81,28 @@ class Branch {
     void spawn() {
       _x = 140;
       _y = 3;
+      _rnd = random(10);
+      _leftOrRight = random(2);
       _active = true;
-      int rnd = random(10);
+      
 
       // Decide size of branch
-      if (rnd == 2) {
-        _currSprite = largeBranch;
+      if (_rnd == 2) {
+        _currSprite = (_leftOrRight == 0) ? largeBranch : largeBranchR;
         _length = 32;
       }
+      else if (_rnd >= 7) {
+        _currSprite = (_leftOrRight == 0) ? medBranch : medBranchR;
+        _length = 24;
+      }
       else {
-        _currSprite = smallBranch;
+        _currSprite = (_leftOrRight == 0) ? smallBranch : smallBranchR;
+        _length = 16;
       }
 
       // Decide what side of screen branch will spawn on
-      rnd = random(2);
-      if (rnd == 1) {
-        _y = 61 - 16;
+      if (_leftOrRight == 1) {
+        _y = 61 - _length;
       }
 
       
