@@ -2,7 +2,7 @@
 #include "branch.h"
 #include <Arduboy2.h>
 
-#define MAX_BRANCHES 6
+#define MAX_BRANCHES 10
 
 Arduboy2 ab;
 Player player;
@@ -104,7 +104,7 @@ void loop() {
       // GAME PLAY
       // Branch Spawn logic
       spawnTimer++;
-      if (spawnTimer == 32) {
+      if (spawnTimer == 24) {
         spawnBranch();
         spawnTimer = 0;
       }
@@ -128,8 +128,8 @@ void loop() {
       }
 
       // Draw functions
-      draw_vines(animFrame);
-      for (int i = 0; i < 6; i++) {
+      drawTrees(animFrame);
+      for (int i = 0; i < MAX_BRANCHES; i++) {
         if (branches[i].getActive()) {
           if (animate) branches[i].update();
           branches[i].draw();
@@ -176,7 +176,7 @@ void titlescreen() {
   } 
 }
 
-void draw_vines(int &animFrame) {
+void drawTrees(int &animFrame) {
   if (animate) {
     if (animFrame < 7) {
       animFrame++;
