@@ -1,14 +1,17 @@
 #include "player.h"
 #include "branch.h"
+#include "banana.h"
 #include <Arduboy2.h>
 
 #define MAX_BRANCHES 10
 
 Arduboy2 ab;
 Player player;
+Banana b;
 Branch branches[MAX_BRANCHES];
 bool animate = true;
 int state;
+int score;
 
 // LOGO SPRITES
 const uint8_t PROGMEM logo_branches[] = {
@@ -58,6 +61,15 @@ const uint8_t PROGMEM logo_message[] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x02, 0x02, 0x02, 0x00, 
 };
 
+const uint8_t PROGMEM logo_credit[] = {
+29, 39,
+0x00, 0x1c, 0x82, 0x82, 0x82, 0x02, 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x47, 0x48, 0x48, 0x46, 0xc1, 0x4e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+0x00, 0xc3, 0x24, 0x24, 0x24, 0xc3, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe2, 0x12, 0xf2, 0x92, 0x61, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x40, 0x40, 0xc0, 0x40, 0xc0, 
+0x00, 0x31, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x00, 0x00, 0x00, 0x00, 0x18, 0x84, 0x84, 0x84, 0x04, 0x04, 0x04, 0x00, 0x00, 0x00, 0x60, 0x81, 0xe2, 0x92, 0x91, 0x92, 0x01, 
+0x00, 0x49, 0x49, 0x49, 0x49, 0x39, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0xc7, 0x24, 0x24, 0x24, 0xc7, 0x04, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+0x0c, 0x10, 0x1c, 0x12, 0x12, 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x49, 0x49, 0x49, 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+};
+
 // TREE SPRITES
 const uint8_t PROGMEM tree[] = {
 8, 3,
@@ -75,6 +87,7 @@ void setup() {
   Serial.begin(9600);
   ab.clear();
   state = 0;
+  score = 0;
   ab.initRandomSeed();
   ab.setFrameRate(60);
 }
@@ -82,9 +95,7 @@ void setup() {
 void loop() {
   static int animFrame = 0;
   static int spawnTimer = 0;
-
-  // Invert colors because I am too lazy to recolor sprites
-  ab.invert(true);
+  
 
   // Check for next frame
   if (!ab.nextFrame()) {
@@ -102,6 +113,7 @@ void loop() {
       break;
     case 1:
       // GAME PLAY
+      ab.invert(true);
       // Branch Spawn logic
       spawnTimer++;
       if (spawnTimer == 24) {
@@ -118,7 +130,14 @@ void loop() {
       }
 
       player.update();
+      b.update();
       
+      // Check if hit banana
+      if (bananaCollisionCheck()) {
+        score += 3;
+        b.spawn();
+      }
+      // Check if hit branch
       if (branchCollisionCheck()) {
         player.fall();
         animate = false;
@@ -127,8 +146,14 @@ void loop() {
         state = 2;
       }
 
+      // Add point for passing a branch
+      if (branchScore()) {
+        score++;
+      }
+
       // Draw functions
       drawTrees(animFrame);
+      b.draw();
       for (int i = 0; i < MAX_BRANCHES; i++) {
         if (branches[i].getActive()) {
           if (animate) branches[i].update();
@@ -141,6 +166,9 @@ void loop() {
     case 2:
       // GAME OVER
       ab.println("GAME OVER");
+      ab.setCursor(20, 20);
+      ab.println(String(score));
+
       if (ab.justPressed(A_BUTTON)) {
         resetGame();
       }
@@ -157,6 +185,7 @@ void titlescreen() {
   Sprites::drawOverwrite(101, 1 - offset, logo_and, 0);
   Sprites::drawOverwrite(89, 1 + offset, logo_bananas, 0);
   
+  
   if (ab.justPressed(A_BUTTON)) {
     if (!inPosition) {
       offset = 0;
@@ -169,7 +198,8 @@ void titlescreen() {
 
   if (offset <= 0) {
     inPosition = true;
-    Sprites::drawOverwrite(32, 8, logo_message, 0);
+    Sprites::drawOverwrite(44, 8, logo_message, 0);
+    Sprites::drawOverwrite(0, 13, logo_credit, 0);
   }
   else {
     offset -= 2;
@@ -191,6 +221,17 @@ void drawTrees(int &animFrame) {
   }
 }
 
+bool branchScore() {
+  for (int i = 0; i < MAX_BRANCHES; i++) {
+    if (branches[i].getX() <= -5) 
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 bool branchCollisionCheck() {
   for (int i = 0; i < MAX_BRANCHES; i++) {
     if (branches[i].getActive()) {
@@ -207,6 +248,17 @@ bool branchCollisionCheck() {
   return false;
 }
 
+bool bananaCollisionCheck() {
+      if (player.getX() < b.getX() + 16 &&
+          player.getX() + 16 > b.getX() &&
+          player.getY() < b.getY() + 12 &&
+          player.getY() + 16 > b.getY())                                  
+      {
+        return true;
+      }
+      return false;
+}
+
 void resetGame() {
   player.reset();
   for (int i = 0; i < MAX_BRANCHES; i++) {
@@ -214,6 +266,7 @@ void resetGame() {
   }
   animate = true;
   state = 1;
+  score = 0;
 }
 
 int spawnBranch() {
