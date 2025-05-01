@@ -10,27 +10,20 @@ const uint8_t PROGMEM banana[] = {
 0x00, 0x00, 0x01, 0x02, 0x04, 0x04, 0x08, 0x08, 0x08, 0x08, 0x08, 0x04, 0x02, 0x01, 0x00, 0x00, 
 };
 
-const uint8_t PROGMEM test[] = {
-16, 16,
-0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-};
-
 const unsigned char PROGMEM banana_mask[] =
 {
-// width, height,
-16, 12,
-// FRAME 00
 0x3f, 0xff, 0xff, 0xfe, 0xf8, 0xf0, 0xe0, 0xe0, 0xc0, 0xc0, 0xc0, 0xc0, 0x80, 0x80, 0xc0, 0xc0, 
 0x00, 0x00, 0x01, 0x03, 0x07, 0x07, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x07, 0x03, 0x01, 0x00, 0x00,
 };
 
 class Banana {
   private:
-    int _x = 700;
+    int _x = 500;
     int _y = 0;
-    int _gravity = 2;
     bool falling = false;
+    float _acceleration = 0.04;
+    float _velocity = 0;
+
 
   public:
 
@@ -43,14 +36,15 @@ class Banana {
     }
 
     void spawn() {
-      _x = 140 + random(120);
+      _x = 160 + random(60);
       _y = 6 + random(36);
-      _gravity = 2;
-      _gravity += random(2);
+      _acceleration = 0.04;
+      _velocity = 0;
     }
 
     void update() {
-      _x -= _gravity;
+      _velocity += _acceleration;
+      _x -= _velocity;
 
       if (_y <= 0) {
         _y = 6 + random(36);
@@ -62,9 +56,7 @@ class Banana {
     }
 
     void draw() {
-      //Sprites::drawOverwrite(10, 5, test, 0);
-      //Sprites::drawExternalMask(10, 5, banana, banana_mask, 0, 0);
-      Sprites::drawOverwrite(_x, _y, banana, 0);
+      Sprites::drawExternalMask(_x, _y, banana, banana_mask, 0, 0);
     }
 };
 
