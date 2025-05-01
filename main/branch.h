@@ -92,17 +92,14 @@ class Branch {
       // Decide size of branch
       if (_rnd == 2) {
         _currSprite = (_leftOrRight == 0) ? largeBranch : largeBranchR;
-        _currMask = (_leftOrRight == 0) ? largeBranch_mask : largeBranchR_mask;
         _length = 32;
       }
       else if (_rnd >= 7) {
         _currSprite = (_leftOrRight == 0) ? medBranch : medBranchR;
-        _currMask = (_leftOrRight == 0) ? medBranch_mask : medBranchR_mask;
         _length = 24;
       }
       else {
         _currSprite = (_leftOrRight == 0) ? smallBranch : smallBranchR;
-        _currMask = (_leftOrRight == 0) ? smallBranch_mask : smallBranchR_mask;
         _length = 16;
       }
 
