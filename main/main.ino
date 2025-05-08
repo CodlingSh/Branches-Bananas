@@ -187,7 +187,7 @@ void loop() {
       }
       ab.setCursor(100, 30);
       ab.println(player.getY());
-      if (ab.justPressed(LEFT_BUTTON)) {
+      if (anyButtonPressed()) {
         player.jump();
       }
       if (ab.justPressed(A_BUTTON)) {
@@ -236,7 +236,25 @@ void loop() {
   ab.display();
 }
 
-void titlescreen() {
+/**
+ * @brief check if any button is being pressed
+ *
+ * This function checks if any button on the Arduboy is being pressed
+ *
+ * @return True if any button is pressed
+ */
+bool anyButtonPressed() 
+{
+  return ab.justPressed(LEFT_BUTTON)  ||
+         ab.justPressed(RIGHT_BUTTON) || 
+         ab.justPressed(UP_BUTTON)    || 
+         ab.justPressed(DOWN_BUTTON)  ||
+         ab.justPressed(A_BUTTON)     ||
+         ab.justPressed(B_BUTTON);
+}
+
+void titlescreen() 
+{
   static int offset = 80;
   static int inPosition = false;
 
@@ -245,22 +263,27 @@ void titlescreen() {
   Sprites::drawOverwrite(89, 1 + offset, logo_bananas, 0);
   
   
-  if (ab.justPressed(A_BUTTON)) {
-    if (!inPosition) {
+  if (anyButtonPressed()) 
+  {
+    if (!inPosition) 
+    {
       offset = 0;
     }
-    else {
+    else 
+    {
       // ab.initRandomSeed();
       state = 1;
     }
   }
 
-  if (offset <= 0) {
+  if (offset <= 0) 
+  {
     inPosition = true;
     Sprites::drawOverwrite(44, 8, logo_message, 0);
     Sprites::drawOverwrite(0, 13, logo_credit, 0);
   }
-  else {
+  else 
+  {
     offset -= 2;
   } 
 }
@@ -282,29 +305,35 @@ void gameOver()
   Sprites::drawOverwrite(86, 30, one, 0);
   
 
-  if (ab.justPressed(A_BUTTON)) {
+  if (anyButtonPressed()) 
+  {
     resetGame();
   }
 }
 
 
-void drawTrees(int &animFrame) {
-  if (animate) {
-    if (animFrame < 7) {
+void drawTrees(int &animFrame) 
+{
+  if (animate) 
+  {
+    if (animFrame < 7) 
+    {
       animFrame++;
     } else {
       animFrame = 0;
     }
   }
   
-  for (int i = 0; i <= 128; i += 8) {
+  for (int i = 0; i <= 128; i += 8) 
+  {
     Sprites::drawOverwrite(i - animFrame, 0, tree, 0);
     Sprites::drawOverwrite(i - animFrame, 61, treeR, 0);
   }
 }
 
 bool branchScore() {
-  for (int i = 0; i < MAX_BRANCHES; i++) {
+  for (int i = 0; i < MAX_BRANCHES; i++) 
+  {
     if (branches[i].getX() <= -5) 
     {
       return true;
@@ -314,9 +343,12 @@ bool branchScore() {
   return false;
 }
 
-bool branchCollisionCheck() {
-  for (int i = 0; i < MAX_BRANCHES; i++) {
-    if (branches[i].getActive()) {
+bool branchCollisionCheck() 
+{
+  for (int i = 0; i < MAX_BRANCHES; i++) 
+  {
+    if (branches[i].getActive()) 
+    {
       if (player.getX() < branches[i].getX() + branches[i].getHeight() - 1 &&       // Is the bottom of the player below the top of the branch (subtract 1)
           player.getX() + 16 > branches[i].getX() + 2 &&                            // Is the top of the player above the bottom of the branch (plus 2)
           player.getY() < branches[i].getY() + branches[i].getLength() - 2 &&           // Is the left of the player to the left of the right of the branch
@@ -330,7 +362,8 @@ bool branchCollisionCheck() {
   return false;
 }
 
-bool bananaCollisionCheck() {
+bool bananaCollisionCheck() 
+{
       if (player.getX() < b.getX() + 16 &&
           player.getX() + 16 > b.getX() &&
           player.getY() < b.getY() + 12 &&
@@ -341,7 +374,8 @@ bool bananaCollisionCheck() {
       return false;
 }
 
-void resetGame() {
+void resetGame() 
+{
   player.reset();
   for (int i = 0; i < MAX_BRANCHES; i++) {
     branches[i].reset();
@@ -356,7 +390,6 @@ int spawnBranch() {
   for (int i = 0; i < MAX_BRANCHES; i++) {
     if (!branches[i].getActive()) {
       branches[i].spawn();
-      Serial.println("Spawned branch " + String(i));
       return 0;   
     }
   }
