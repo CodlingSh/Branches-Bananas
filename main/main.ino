@@ -301,14 +301,19 @@ void gameOver()
   int *branchesTensSprite;
   int *branchesOnesSprite;
 
-  //if (!branchesOnes)
-  //{
-    branchesTenthousands = (branchCount / 10000);
-    branchesThousands = (branchCount / 1000) % 10;
-    branchesHundreds = (branchCount / 100) % 10;
-    branchesTens = (branchCount / 10) % 10;
-    branchesOnes = (branchCount) % 10;
-  //}
+  
+  branchesTenthousands = (branchCount / 10000);
+  branchesThousands = (branchCount / 1000) % 10;
+  branchesHundreds = (branchCount / 100) % 10;
+  branchesTens = (branchCount / 10) % 10;
+  branchesOnes = (branchCount) % 10;
+  
+  // Assign sprite to pointer
+  branchesTenthousandsSprite = getDigitSprite();
+  branchesThousandsSprite = getDigitSprite();
+  branchesHundredsSprite = getDigitSprite();
+  branchesTensSprite = getDigitSprite();
+  branchesOnesSprite = getDigitSprite();
 
   // Invert
   ab.invert(false);
@@ -331,6 +336,11 @@ void gameOver()
   {
     resetGame();
   }
+}
+
+uint8_t getDigitSprite(int digit)
+{
+  
 }
 
 
