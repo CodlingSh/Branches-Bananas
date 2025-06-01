@@ -323,6 +323,7 @@ void gameOver()
 
   uint8_t score = branchCount + (bananaCount * 3);
 
+  // set digits
   branchesTenthousands = (branchCount / 10000);
   branchesThousands = (branchCount / 1000) % 10;
   branchesHundreds = (branchCount / 100) % 10;
