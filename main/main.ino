@@ -7,7 +7,7 @@
 
 Arduboy2 ab;
 Player player;
-Banana b;
+Banana banana;
 Branch branches[MAX_BRANCHES];
 bool animate = true;
 int state;
@@ -181,26 +181,22 @@ void loop() {
       ab.invert(true);
       // Branch Spawn logic
       spawnTimer++;
-      if (spawnTimer == 24) {
+      if (spawnTimer == 32) {
         spawnBranch();
         spawnTimer = 0;
       }
-      ab.setCursor(100, 30);
-      ab.println(player.getY());
+      // Make the player jump when a button is pressed
       if (anyButtonPressed()) {
         player.jump();
       }
-      if (ab.justPressed(A_BUTTON)) {
-        branches[0].spawn();
-      }
 
       player.update();
-      b.update();
+      banana.update();
       
       // Check if hit banana
       if (bananaCollisionCheck()) {
         bananaCount++;
-        b.spawn();
+        banana.spawn();
       }
       // Check if hit branch
       if (branchCollisionCheck()) {
@@ -218,7 +214,7 @@ void loop() {
 
       // Draw functions
       drawTrees(animFrame);
-      b.draw();
+      banana.draw();
       for (int i = 0; i < MAX_BRANCHES; i++) {
         if (branches[i].getActive()) {
           if (animate) branches[i].update();
@@ -491,10 +487,10 @@ bool branchCollisionCheck()
 
 bool bananaCollisionCheck() 
 {
-      if (player.getX() < b.getX() + 16 &&
-          player.getX() + 16 > b.getX() &&
-          player.getY() < b.getY() + 12 &&
-          player.getY() + 16 > b.getY())                                  
+      if (player.getX() < banana.getX() + 16 &&
+          player.getX() + 16 > banana.getX() &&
+          player.getY() < banana.getY() + 12 &&
+          player.getY() + 16 > banana.getY())                                  
       {
         return true;
       }
