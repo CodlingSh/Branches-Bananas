@@ -86,7 +86,7 @@ class Branch {
       _x = 140;
       _y = 3;
       _rnd = random(10);
-      _leftOrRight = /*random(2);*/0;
+      _leftOrRight = random(2);;
       _active = true;
       
       // Decide size of branch
@@ -103,7 +103,7 @@ class Branch {
         _length = 16;
       }
 
-      // Decide what side of screen branch will spawn on
+      // Decide what side of screen branch will spawn
       if (_leftOrRight == 1) {
         _y = 61 - _length;
       } 
