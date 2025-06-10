@@ -159,7 +159,7 @@ void setup() {
 
 void loop() {
   static int animFrame = 0;
-  static int spawnTimer = 0;
+  static uint64_t spawnTimer = 0;
   
 
   // Check for next frame
@@ -181,9 +181,9 @@ void loop() {
       ab.invert(true);
       // Branch Spawn logic
       spawnTimer++;
-      if (spawnTimer == 32) {
+      if (spawnTimer % 32 == 0) {
         spawnBranch();
-        spawnTimer = 0;
+        //spawnTimer = 0;
       }
       // Make the player jump when a button is pressed
       if (anyButtonPressed()) {
@@ -213,8 +213,8 @@ void loop() {
       }
 
       // Draw functions
-      drawTrees(animFrame);
       banana.draw();
+      drawTrees(animFrame);
       for (int i = 0; i < MAX_BRANCHES; i++) {
         if (branches[i].getActive()) {
           if (animate) branches[i].update();
@@ -393,6 +393,11 @@ void gameOver()
   {
     resetGame();
   }
+}
+
+bool spawnBranch(uint64_t timer)
+{
+  
 }
 
 const uint8_t* getDigitSprite(int digit)
