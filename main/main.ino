@@ -181,10 +181,7 @@ void loop() {
       ab.invert(true);
       // Branch Spawn logic
       spawnTimer++;
-      if (spawnTimer % 32 == 0) {
-        spawnBranch();
-        //spawnTimer = 0;
-      }
+      spawnCheck(spawnTimer);
       // Make the player jump when a button is pressed
       if (anyButtonPressed()) {
         player.jump();
@@ -395,11 +392,6 @@ void gameOver()
   }
 }
 
-bool spawnBranch(uint64_t timer)
-{
-  
-}
-
 const uint8_t* getDigitSprite(int digit)
 {
   switch (digit) 
@@ -520,5 +512,24 @@ int spawnBranch() {
       branches[i].spawn();
       return 0;   
     }
+  }
+}
+
+void spawnCheck(uint64_t timer)
+{ 
+  static uint8_t rng = random(8);
+  uint8_t spawnDif = 32;
+
+  // Alter spawnDif for difficulty the longer the player lasts. Max is 5 minutes
+  // if (timer < 18000)
+  // {
+  //   spawnDif = 64 - (timer / 500);
+  // }
+
+  // Spawn branch if appropriate
+  if (timer % (32 + rng) == 0)
+  {
+    rng = random(8);
+    spawnBranch();
   }
 }
