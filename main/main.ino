@@ -159,7 +159,7 @@ void setup() {
 
 void loop() {
   static int animFrame = 0;
-  static uint64_t spawnTimer = 0;
+  static uint64_t playTime = 0;
   
 
   // Check for next frame
@@ -180,8 +180,8 @@ void loop() {
       // GAME PLAY
       ab.invert(true);
       // Branch Spawn logic
-      spawnTimer++;
-      spawnCheck(spawnTimer);
+      branchSpawnController(playTime++);
+      //spawnCheck(spawnTimer);
       // Make the player jump when a button is pressed
       if (anyButtonPressed()) {
         player.jump();
@@ -357,14 +357,6 @@ void gameOver()
   // Draw background
   Sprites::drawOverwrite(0, 0, board, 0);
 
-  // Print
-  Serial.println(branchesTenthousands);
-  Serial.println(branchesThousands);
-  Serial.println(branchesHundreds);
-  Serial.println(branchesTens);
-  Serial.println(branchesOnes);
-  Serial.println("Branches = " + String(branchCount));
-
   // Draw branches score
   Sprites::drawOverwrite(93, 17, branchesTenthousandsSprite, 0);
   Sprites::drawOverwrite(93, 23, branchesThousandsSprite, 0);
@@ -515,21 +507,45 @@ int spawnBranch() {
   }
 }
 
-void spawnCheck(uint64_t timer)
-{ 
-  static uint8_t rng = random(8);
-  uint8_t spawnDif = 32;
+void branchSpawnController(uint64_t timePassed)
+{
+  static uint8_t delay = 96;
+  static uint8_t rndRange = random(16);
+  static uint8_t space = 32;
 
-  // Alter spawnDif for difficulty the longer the player lasts. Max is 5 minutes
-  // if (timer < 18000)
-  // {
-  //   spawnDif = 64 - (timer / 500);
-  // }
+  --delay;
 
-  // Spawn branch if appropriate
-  if (timer % (32 + rng) == 0)
+  if (delay == 0)
   {
-    rng = random(8);
     spawnBranch();
+    delay = space + rndRange;
+    
+    // Determine variables for difficulty
+    if (timePassed < 3600)
+    {
+
+    }
+    rndRange = random(16);
+    space = 32;
+    Serial.println("delay = " + String(delay));
   }
 }
+
+// void spawnCheck(uint64_t timer)
+// { 
+//   static uint8_t rng = random(8);
+//   uint8_t spawnDif = 32;
+
+//   // Alter spawnDif for difficulty the longer the player lasts. Max is 5 minutes
+//   // if (timer < 18000)
+//   // {
+//   //   spawnDif = 64 - (timer / 500);
+//   // }
+
+//   // Spawn branch if appropriate
+//   if (timer % (32 + rng) == 0)
+//   {
+//     rng = random(8);
+//     spawnBranch();
+//   }
+// }
