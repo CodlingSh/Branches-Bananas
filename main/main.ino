@@ -180,7 +180,8 @@ void loop() {
       // GAME PLAY
       ab.invert(true);
       // Branch Spawn logic
-      branchSpawnController(playTime++);
+      branchSpawnController(playTime);
+      playTime++;
       //spawnCheck(spawnTimer);
       // Make the player jump when a button is pressed
       if (anyButtonPressed()) {
@@ -519,15 +520,20 @@ void branchSpawnController(uint64_t timePassed)
   {
     spawnBranch();
     delay = space + rndRange;
+    Serial.println(delay);
     
     // Determine variables for difficulty
-    if (timePassed < 3600)
+    if (timePassed > 1800)
     {
-
+      rndRange = random(8);
+      space = 20;
+      Serial.println(rndRange);
     }
-    rndRange = random(16);
-    space = 32;
-    Serial.println("delay = " + String(delay));
+    else 
+    {
+      rndRange = random(16);
+      space = 32;
+    }
   }
 }
 
