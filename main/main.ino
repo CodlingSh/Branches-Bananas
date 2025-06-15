@@ -224,6 +224,7 @@ void loop() {
       break;
     case 2:
       // GAME OVER
+      playTime = 0;
       gameOver();
   }
 
@@ -520,38 +521,22 @@ void branchSpawnController(uint64_t timePassed)
   {
     spawnBranch();
     delay = space + rndRange;
-    Serial.println(delay);
     
     // Determine variables for difficulty
-    if (timePassed > 1800)
-    {
-      rndRange = random(8);
-      space = 20;
-      Serial.println(rndRange);
-    }
-    else 
+    if (timePassed < 900)
     {
       rndRange = random(16);
       space = 32;
     }
+    else if (timePassed < 1800)
+    {
+      rndRange = random(8);
+      space = 26;
+    }
+    else if (timePassed < 3600)
+    {
+      rndRange = random(8);
+      space = 20;
+    }
   }
 }
-
-// void spawnCheck(uint64_t timer)
-// { 
-//   static uint8_t rng = random(8);
-//   uint8_t spawnDif = 32;
-
-//   // Alter spawnDif for difficulty the longer the player lasts. Max is 5 minutes
-//   // if (timer < 18000)
-//   // {
-//   //   spawnDif = 64 - (timer / 500);
-//   // }
-
-//   // Spawn branch if appropriate
-//   if (timer % (32 + rng) == 0)
-//   {
-//     rng = random(8);
-//     spawnBranch();
-//   }
-// }
