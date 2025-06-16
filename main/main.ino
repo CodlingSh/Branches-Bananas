@@ -232,11 +232,12 @@ void loop() {
 }
 
 /**
- * @brief check if any button is being pressed
+ * @brief check if any button was just pressed
  *
- * This function checks if any button on the Arduboy is being pressed
+ * This function checks if any of the Arduboy buttons were just pressed
+ * during the current frame (i.e., transitioned from unpressed to pressed).
  *
- * @return True if any button is pressed
+ * @return True if any button is just pressed. False otherwise
  */
 bool anyButtonPressed() 
 {
@@ -248,6 +249,15 @@ bool anyButtonPressed()
          ab.justPressed(B_BUTTON);
 }
 
+/**
+ * @brief draws and animates the title the title screen.
+ *
+ * This function handles the animation of the title screen logos, displays
+ * additional text once the animation is complete, and transitions to the 
+ * next game state when a button is pressed.
+ *
+ * @return void
+ */
 void titlescreen() 
 {
   static int offset = 80;
