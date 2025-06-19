@@ -221,6 +221,10 @@ void loop() {
       }
       player.draw();
 
+      // DRAW system STATS
+      ab.setCursor(110, 30);
+      ab.println(ab.cpuLoad());
+
       break;
     case 2:
       // GAME OVER
