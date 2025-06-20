@@ -175,6 +175,9 @@ class Player {
         if (gravityDelta < 5) gravityDelta += gravityDelta;
         if (_x < -50) falling = false;
       }
+
+      // Animate
+      
     }
 
     void draw() {
