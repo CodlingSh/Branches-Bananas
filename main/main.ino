@@ -13,6 +13,7 @@ bool animate = true;
 int state;
 int bananaCount;
 int branchCount;
+uint64_t playTime;
 
 // LOGO SPRITES
 const uint8_t PROGMEM logo_branches[] = {
@@ -151,6 +152,7 @@ void setup() {
   Serial.begin(9600);
   ab.clear();
   state = 0;
+  playTime = 0;
   branchCount = 0;
   bananaCount = 0;
   ab.initRandomSeed();
@@ -159,7 +161,6 @@ void setup() {
 
 void loop() {
   static int animFrame = 0;
-  static uint64_t playTime = 0;
   
 
   // Check for next frame
@@ -211,7 +212,6 @@ void loop() {
       }
 
       // Draw functions
-      banana.draw();
       drawTrees(animFrame);
       for (int i = 0; i < MAX_BRANCHES; i++) {
         if (branches[i].getActive()) {
@@ -219,6 +219,7 @@ void loop() {
           branches[i].draw();
         }
       }
+      banana.draw();
       player.draw();
 
       // DRAW system STATS
@@ -512,6 +513,7 @@ void resetGame()
   state = 1;
   bananaCount = 0;
   branchCount = 0;
+  playTime = 0;
 }
 
 int spawnBranch() {
