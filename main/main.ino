@@ -161,7 +161,7 @@ void setup() {
 
 void loop() {
   static int animFrame = 0;
-  
+  static bool gameOvered = false;
 
   // Check for next frame
   if (!ab.nextFrame()) {
@@ -181,7 +181,7 @@ void loop() {
       // GAME PLAY
       ab.invert(true);
       // Branch Spawn logic
-      branchSpawnController(playTime);
+      branchSpawnController(playTime, false);
       playTime++;
       //spawnCheck(spawnTimer);
       // Make the player jump when a button is pressed
@@ -229,8 +229,12 @@ void loop() {
       break;
     case 2:
       // GAME OVER
-      playTime = 0;
       gameOver();
+
+      if (anyButtonPressed()) 
+      {
+        resetGame();
+      }
   }
 
   ab.display();
@@ -394,11 +398,6 @@ void gameOver()
   Sprites::drawOverwrite(29, 29, scoreHundredsSprite, 0);
   Sprites::drawOverwrite(29, 35, scoreTensSprite, 0);
   Sprites::drawOverwrite(29, 41, scoreOnesSprite, 0);
-  
-  if (anyButtonPressed()) 
-  {
-    resetGame();
-  }
 }
 
 const uint8_t* getDigitSprite(int digit)
@@ -505,31 +504,37 @@ bool bananaCollisionCheck()
 
 void resetGame() 
 {
+  branchSpawnController(0, true);
   player.reset();
   for (int i = 0; i < MAX_BRANCHES; i++) {
     branches[i].reset();
   }
   animate = true;
-  state = 1;
   bananaCount = 0;
   branchCount = 0;
   playTime = 0;
+  state = 1;
 }
 
-int spawnBranch() {
+void spawnBranch() {
   for (int i = 0; i < MAX_BRANCHES; i++) {
     if (!branches[i].getActive()) {
       branches[i].spawn();
-      return 0;   
+      return;
     }
   }
 }
 
-void branchSpawnController(uint64_t timePassed)
+void branchSpawnController(uint64_t timePassed, bool delayReset)
 {
   static uint8_t delay = 96;
   static uint8_t rndRange = random(16);
   static uint8_t space = 32;
+
+  if (delayReset)
+  {
+    delay = 96;
+  }
 
   --delay;
 
