@@ -98,11 +98,11 @@ class Banana {
       }
 
       // Animate banana and reset timer
-      frame = timer / 10;
+      frame = timer / 8;
 
       timer++;
 
-      if (timer >= 80)
+      if (timer >= 64)
       {
         timer = 0; 
       }
