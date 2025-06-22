@@ -504,7 +504,6 @@ bool bananaCollisionCheck()
 
 void resetGame() 
 {
-  branchSpawnController(0, true);
   player.reset();
   for (int i = 0; i < MAX_BRANCHES; i++) {
     branches[i].reset();
@@ -513,6 +512,7 @@ void resetGame()
   bananaCount = 0;
   branchCount = 0;
   playTime = 0;
+  branchSpawnController(0, true);
   state = 1;
 }
 
@@ -557,7 +557,7 @@ void branchSpawnController(uint64_t timePassed, bool delayReset)
     else if (timePassed < 3600)
     {
       rndRange = random(8);
-      space = 20;
+      space = 22;
     }
   }
 }
