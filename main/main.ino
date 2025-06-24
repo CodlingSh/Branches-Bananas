@@ -223,8 +223,8 @@ void loop() {
       player.draw();
 
       // DRAW system STATS
-      ab.setCursor(110, 30);
-      ab.println(ab.cpuLoad());
+      
+      //ab.println(ab.cpuLoad());
 
       break;
     case 2:
@@ -234,6 +234,9 @@ void loop() {
       if (anyButtonPressed()) 
       {
         resetGame();
+        Serial.println("******************");
+        Serial.println("* GAME RESTARTED *");
+        Serial.println("******************");
       }
   }
 
@@ -525,7 +528,7 @@ void spawnBranch() {
   }
 }
 
-void branchSpawnController(uint64_t timePassed, bool delayReset)
+void branchSpawnController(int timePassed, bool delayReset)
 {
   static uint8_t delay = 96;
   static uint8_t rndRange = random(16);
@@ -534,30 +537,40 @@ void branchSpawnController(uint64_t timePassed, bool delayReset)
   if (delayReset)
   {
     delay = 96;
+    rndRange = random(16);
+    space = 32;
+    return;
   }
 
-  --delay;
+  delay--;
 
   if (delay == 0)
   {
     spawnBranch();
     delay = space + rndRange;
+
+    Serial.print(String(delay) + " | " + String(timePassed));
     
     // Determine variables for difficulty
     if (timePassed < 900)
     {
       rndRange = random(16);
       space = 32;
+      Serial.println(" | " + String(timePassed) + " easy");
     }
     else if (timePassed < 1800)
     {
       rndRange = random(8);
       space = 26;
+      Serial.println(" | " + String(timePassed) + " medium");
     }
-    else if (timePassed < 3600)
+    else
     {
       rndRange = random(8);
       space = 22;
+      Serial.println(" | " + String(timePassed) + " hard");
     }
   }
+  
+  
 }
