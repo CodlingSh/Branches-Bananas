@@ -93,7 +93,9 @@ class Player {
     bool airborn = false;
     bool onRight = false;
     bool falling = false;
-    uint8_t *currSprite = monkey; 
+    uint8_t *currSprite = monkey;
+    uint8_t timer = 0;
+    uint8_t frame = 0;
     //uint8_t *currMask = monkey_mask;
   
   public:
@@ -177,14 +179,24 @@ class Player {
       }
 
       // Animate
-      
+      timer++;
+
+      if (timer % 6 == 0)
+      {
+        frame++;
+        if (frame > 3)
+        {
+          frame = 0;
+        }
+      }
     }
 
     void draw() {
-      // Draw player
-      //Sprites::drawSelfMasked(_x, _y, currSprite, 0);
-      //Sprites::drawExternalMask(_x, _y, currSprite, currMask, 0, 0);
-      Sprites::drawPlusMask(_x, _y, currSprite, 0);
+      if (airborn)
+      {
+        frame = 0;
+      }
+      Sprites::drawPlusMask(_x, _y, currSprite, frame);
     }
 };
 
