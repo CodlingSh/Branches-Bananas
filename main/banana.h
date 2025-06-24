@@ -109,7 +109,6 @@ class Banana {
     }
 
     void draw() {
-      //Sprites::drawExternalMask(_x, _y, banana_spr, banana_mask, 0, 0);
       Sprites::drawPlusMask(_x, _y, bananaSpr, frame);
     }
 };
