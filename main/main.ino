@@ -2,11 +2,13 @@
 #include "branch.h"
 #include "banana.h"
 #include <Arduboy2.h>
+#include <ArduboyTones.h>
 
 #define MAX_BRANCHES 10
 
 Arduboy2 ab;
-Player player;
+ArduboyTones sound(ab.audio.enabled);
+Player player(&ab, &sound);
 Banana banana;
 Branch branches[MAX_BRANCHES];
 bool animate = true;
@@ -157,6 +159,7 @@ void setup() {
   bananaCount = 0;
   ab.initRandomSeed();
   ab.setFrameRate(60);
+  ab.audio.on();
 }
 
 void loop() {
