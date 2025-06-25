@@ -2,6 +2,8 @@
 #define PLAYER_H
 
 #include <Arduboy2.h>
+#include <ArduboyTones.h>
+
 
 // SPRITES
 const unsigned char PROGMEM monkey[] =
@@ -85,8 +87,20 @@ const unsigned char PROGMEM monkeyJumpR[] =
 0x20, 0x3f, 0x40, 0x7f, 0x82, 0xff, 0x91, 0xff, 0x91, 0xff, 0x42, 0x7f, 0x20, 0x3f, 0x1f, 0x1f,
 };
 
+// SOUNDS
+const uint16_t jumpSound[] PROGMEM =
+{
+  NOTE_E4, 100,
+  NOTE_B4, 100,
+  NOTE_F4, 100,
+
+  TONES_END
+};
+ 
 class Player {
   private:
+    Arduboy2 *ab;
+    ArduboyTones *sound;
     int _x = 5;
     int _y = 0;
     float gravityDelta = 0.125;
@@ -99,6 +113,8 @@ class Player {
     //uint8_t *currMask = monkey_mask;
   
   public:
+    Player(Arduboy2 *abPtr, ArduboyTones *soundPtr)
+      : ab(abPtr), sound(soundPtr) {}
 
     int getX() {
       return _x;
@@ -119,6 +135,7 @@ class Player {
           //currMask = monkeyJumpR_mask;
         }
         airborn = true;
+        sound->tones(jumpSound);
       }
     }
 
