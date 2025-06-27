@@ -90,9 +90,33 @@ const unsigned char PROGMEM monkeyJumpR[] =
 // SOUNDS
 const uint16_t jumpSound[] PROGMEM =
 {
-  NOTE_E4, 100,
-  NOTE_B4, 100,
+  NOTE_C4, 60,
+  NOTE_E5, 60,
+  NOTE_G5, 80,
+  NOTE_E5, 60,
+  NOTE_C4, 60,
+  
+  TONES_END
+};
+
+const uint16_t bananaSound[] PROGMEM =
+{
+  NOTE_G5, 50,
+  NOTE_B5, 50,
+  NOTE_E6, 70,
+
+  TONES_END
+};
+
+const uint16_t deathSound[] PROGMEM =
+{
+  NOTE_C5, 100,
+  NOTE_A4, 100,
   NOTE_F4, 100,
+  NOTE_D4, 100,
+  NOTE_B3, 120,
+  NOTE_G3, 120,
+  NOTE_E3, 150,
 
   TONES_END
 };
@@ -139,9 +163,16 @@ class Player {
       }
     }
 
-    void fall() {
+    void fall() 
+    { 
+      sound->tones(deathSound);
       falling = true;
     }
+
+    void getBanana()
+    {
+      sound->tones(bananaSound);
+    } 
 
     void reset() {
       _x = 5;
@@ -151,7 +182,6 @@ class Player {
       onRight = false;
       falling = false;
       currSprite = monkey;
-      //currMask = monkey_mask; 
     }
 
     void update() {
