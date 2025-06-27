@@ -503,6 +503,7 @@ bool bananaCollisionCheck()
           player.getY() < banana.getY() + 12 &&
           player.getY() + 16 > banana.getY())                                  
       {
+        player.getBanana();
         return true;
       }
       return false;
