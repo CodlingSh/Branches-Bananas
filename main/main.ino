@@ -320,6 +320,11 @@ void gameOver()
   uint8_t scoreHundreds;
   uint8_t scoreTens;
   uint8_t scoreOnes;
+  uint8_t highScoreTenthousands;
+  uint8_t highScoreThousands;
+  uint8_t highScoreHundreds;
+  uint8_t highScoreTens;
+  uint8_t highScoreOnes;
   uint8_t *branchesTenthousandsSprite;
   uint8_t *branchesThousandsSprite;
   uint8_t *branchesHundredsSprite;
@@ -366,11 +371,11 @@ void gameOver()
   scoreTens = (score / 10) % 10;
   scoreOnes = (score) % 10;
 
-  highScoreTenthousandsSprite = (highScore / 10000);
-  highScoreThousandsSprite = (highScore / 1000) % 10;
-  highScoreHundredsSprite = (highScore / 100) % 10;
-  highScoreTensSprite = (highScore / 10) % 10;
-  highScoreOnesSprite = (highScore) % 10;
+  highScoreTenthousands = (highScore / 10000);
+  highScoreThousands = (highScore / 1000) % 10;
+  highScoreHundreds = (highScore / 100) % 10;
+  highScoreTens = (highScore / 10) % 10;
+  highScoreOnes = (highScore) % 10;
   
   // Assign sprite to pointer
   branchesTenthousandsSprite = getDigitSprite(branchesTenthousands);
@@ -388,6 +393,11 @@ void gameOver()
   scoreHundredsSprite = getDigitSprite(scoreHundreds);
   scoreTensSprite = getDigitSprite(scoreTens);
   scoreOnesSprite = getDigitSprite(scoreOnes);
+  highScoreTenthousandsSprite = getDigitSprite(highScoreTenthousands);
+  highScoreThousandsSprite = getDigitSprite(highScoreThousands);
+  highScoreHundredsSprite = getDigitSprite(highScoreHundreds);
+  highScoreTensSprite = getDigitSprite(highScoreTens);
+  highScoreOnesSprite = getDigitSprite(highScoreOnes);
 
   // Invert
   ab.invert(false);
