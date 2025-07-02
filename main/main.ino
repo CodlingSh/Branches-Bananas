@@ -15,6 +15,7 @@ bool animate = true;
 int state;
 int bananaCount;
 int branchCount;
+int highScore;
 uint64_t playTime;
 
 // LOGO SPRITES
@@ -334,8 +335,17 @@ void gameOver()
   uint8_t *scoreHundredsSprite;
   uint8_t *scoreTensSprite;
   uint8_t *scoreOnesSprite;
-
-  uint8_t score = branchCount + (bananaCount * 3);
+  uint8_t *highScoreTenthousandsSprite;
+  uint8_t *highScoreThousandsSprite;
+  uint8_t *highScoreHundredsSprite;
+  uint8_t *highScoreTensSprite;
+  uint8_t *highScoreOnesSprite;
+  uint16_t score = branchCount + (bananaCount * 3);
+  
+  if (score > highScore)
+  {
+    highScore = score;
+  }
 
   // set digits
   branchesTenthousands = (branchCount / 10000);
@@ -355,6 +365,12 @@ void gameOver()
   scoreHundreds = (score / 100) % 10;
   scoreTens = (score / 10) % 10;
   scoreOnes = (score) % 10;
+
+  highScoreTenthousandsSprite = (highScore / 10000);
+  highScoreThousandsSprite = (highScore / 1000) % 10;
+  highScoreHundredsSprite = (highScore / 100) % 10;
+  highScoreTensSprite = (highScore / 10) % 10;
+  highScoreOnesSprite = (highScore) % 10;
   
   // Assign sprite to pointer
   branchesTenthousandsSprite = getDigitSprite(branchesTenthousands);
@@ -398,6 +414,13 @@ void gameOver()
   Sprites::drawOverwrite(34, 29, scoreHundredsSprite, 0);
   Sprites::drawOverwrite(34, 35, scoreTensSprite, 0);
   Sprites::drawOverwrite(34, 41, scoreOnesSprite, 0);
+
+  // Draw high score
+  Sprites::drawOverwrite(8, 17, highScoreTenthousandsSprite, 0);
+  Sprites::drawOverwrite(8, 23, highScoreThousandsSprite, 0);
+  Sprites::drawOverwrite(8, 29, highScoreHundredsSprite, 0);
+  Sprites::drawOverwrite(8, 35, highScoreTensSprite, 0);
+  Sprites::drawOverwrite(8, 41, highScoreOnesSprite, 0);
 }
 
 const uint8_t* getDigitSprite(int digit)
