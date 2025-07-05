@@ -168,7 +168,7 @@ void loop() {
   static bool gameOvered = false;
 
   // Check for next frame
-  if (!ab.nextFrame()) {
+  if (!ab.nextFrameDEV()) {
     return;
   }
 
@@ -225,7 +225,6 @@ void loop() {
       }
       banana.draw();
       player.draw();
-
 
       break;
     case 2:
@@ -602,6 +601,4 @@ void branchSpawnController(int timePassed, bool delayReset)
       Serial.println(" | " + String(timePassed) + " hard");
     }
   }
-  
-  
 }
